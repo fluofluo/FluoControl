@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{hyperadmin_dashboard_template}" lang="en">
+
+
+
+
+<head>
+
+<title>Clients</title>
+
+</head>
+
+<body>
+	<div class="wrapper" layout:fragment="content">
+
+		<div class="main-panel">
+
+
+			<!--  <div class="panel-header panel-header-sm"></div> -->
+
+			<div class="content">
+
+				<div class="wrapper">
+					<div class="col-md-12">
+						<div class="card">
+							<div class="card-header">
+								<h2>Add Client</h2>
+							</div>
+
+							<div class="card-body">
+								<form action="/addClient" method="POST"
+									th:modelAttribute="addClient">
+									<div class="row">
+										<label class="col-sm-1 col-form-label" id="clientName">Name</label>
+										<div class="col-sm-4">
+											<div class="form-group">
+												<input class="form-control" type="text" name="clientName"
+													id="clientName" aria-invalid="false">
+											</div>
+										</div>
+									</div>
+
+									<div class="row">
+
+										<label class="col-sm-1 col-form-label"
+											id="clientAddressStreet">Adress</label>
+										<div class="col-sm-2">
+											<div class="form-group">
+												<input class="form-control" type="text"
+													name="clientAddressStreet" id="clientAddressStreet"
+													aria-invalid="false" placeholder="Street">
+											</div>
+										</div>
+
+
+										<div class="col-sm-2">
+											<div class="form-group">
+												<input class="form-control" type="text"
+													name="clientAddressCity" id="clientAddressCity"
+													aria-invalid="false" placeholder="City">
+											</div>
+										</div>
+
+
+										<div class="col-sm-2">
+											<div class="form-group">
+												<input class="form-control" type="text"
+													name="clientAddressPostalCode" id="clientAddressPostalCode"
+													aria-invalid="false" placeholder="Postal code">
+											</div>
+										</div>
+									</div>
+
+
+
+
+									<div class="row">
+
+										<label class="col-sm-1 col-form-label" id="contactPersonName">Contact</label>
+										<div class="col-sm-2">
+											<div class="form-group">
+												<input class="form-control" type="text"
+													name="contactPersonName" id="contactPersonName"
+													aria-invalid="false" placeholder="Name">
+											</div>
+										</div>
+
+
+										<div class="col-sm-2">
+											<div class="form-group">
+												<input class="form-control" type="text"
+													name="contactPersonNumber" id="contactPersonNumber"
+													aria-invalid="false" placeholder="Number">
+											</div>
+										</div>
+
+
+										<div class="col-sm-2">
+											<div class="form-group">
+												<input class="form-control" type="text"
+													name="contactPersonEmail" id="contactPersonEmail"
+													aria-invalid="false" placeholder="Email">
+											</div>
+										</div>
+									</div>
+
+
+									<div class="row">
+										<label class="col-sm-1 col-form-label" id="clientCode">Client
+											code</label>
+										<div class="col-sm-3">
+											<div class="form-group">
+												<input class="form-control" type="text" name="clientCode"
+													id="clientCode" aria-invalid="false">
+											</div>
+										</div>
+									</div>
+
+
+									<button class="btn btn-primary btn-simple" type="submit">Add</button>
+								</form>
+							</div>
+						</div>
+						<br />
+
+						<div class="card">
+							<div class="card-header">
+								<h2>Search for client</h2>
+							</div>
+
+							<div class="card-body">
+								<form id="searchClientInput" action="/searchClient"
+									method="POST">
+									<div class="row">
+										<div class="col-sm-2">
+											<input class="form-control" type="text" name="searchClient"
+												th:value="${searchClient}" style="margin-top: 10px;" />
+											<!-- onkeyup="searchClientOnKeyUp()" -->
+										</div>
+										<div class="col-sm-1">
+											<button id="searchClientButton"
+												class="btn btn-primary btn-simple" type="submit"
+												value="Search">Search</button>
+										</div>
+									</div>
+								</form>
+
+
+
+								<br />
+							</div>
+
+							<div class="card-body">
+								<div class="col-md-auto">
+									<div class="table-responsive">
+										<table class="table">
+											<thead class="text">
+												<tr>
+													<th>Name</th>
+													<th>Street</th>
+													<th>City</th>
+													<th>Postal code</th>
+													<th>Client code</th>
+													<th>Contact person</th>
+													<th>Contact number</th>
+													<th>Contact email</th>
+													<th>Edit</th>
+													<th>Remove</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr th:each="client : ${clientList}">
+													<td><a th:text="${client.clientName}" /></a></td>
+													<td th:text="${client.clientAddressStreet}"></td>
+													<td th:text="${client.clientAddressCity}"></td>
+													<td th:text="${client.clientAddressPostalCode}"></td>
+													<td th:text="${client.clientCode}"></td>
+													<td th:text="${client.contactPersonName}"></td>
+													<td th:text="${client.contactPersonNumber}"></td>
+													<td th:text="${client.contactPersonEmail}"></td>
+													<td><a class="btn btn-info"
+														th:modelAttribute="showClient"
+														th:href="@{/clients_show/__${client.id}__}"> <i
+															class="now-ui-icons ui-2_settings-90"></i></a></td>
+													<td><a id="clientDeleteConfirmButton"
+														class="btn btn-danger-deleteClient"
+														onclick="clientDeleteConfirmAlert();"
+														th:value="@{/delete_client/__${client.id}__}"> <i
+															class="now-ui-icons ui-1_simple-remove"></i></a></td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+
+
+							<!-- 	<td><a class="btn btn-danger" th:modelAttribute="deleteClient"
+										th:href="@{/delete_client/__${client.id}__}"> 
+										<i class="now-ui-icons ui-1_simple-remove"></i></a></td> -->
+
+
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+			<footer class="footer">
+				<div class="container">
+					<div>
+						<ul>
+							<li><a href="https://www.google.com"> FLUO </a></li>
+							<li><a href="https://www.google.com"> About Us </a></li>
+							<li><a href="https://www.google.com"> Blog </a></li>
+							<li>
+								<div class="copyright" id="copyright">&copy;</div>
+							</li>
+						</ul>
+
+
+						<script th:src="@{/static/js/sweetalert2.all.min.js}"></script>
+
+						<script>
+							const buttons = document.querySelectorAll('.btn-danger-deleteClient')
+							
+							for(button of buttons){
+							  const value = button.getAttribute('value')
+							  button.addEventListener('click', () => {
+							    clientDeleteConfirmAlert(value);
+							    document.getElementById('clientDeleteConfirmButton').getAttribute('value');
+							  })
+							  
+							}
+							
+							function clientDeleteConfirmAlert (hrefValue) {
+															
+							const swalWithBootstrapButtons = Swal.mixin({
+								confirmButtonClass: 'btn btn-success',
+								cancelButtonClass: 'btn btn-danger',
+								buttonsStyling: false,
+								})
+														
+														
+								swalWithBootstrapButtons.fire({
+									title: 'Are you sure?',
+									text: "You won't be able to revert this!",
+									type: 'warning',
+									showCancelButton: true,							  
+									confirmButtonText: 'Yes, delete it!',
+									cancelButtonText: 'No, cancel!',
+									reverseButtons: true
+								}).then((result) => {
+									if (result.value) {
+										swalWithBootstrapButtons.fire({
+										    type: 'success',
+										    title: 'Client deleted',
+										    showConfirmButton: false,
+										    timer: 1500
+										    }					
+										);
+										setTimeout(function(){ 
+											window.location.replace(hrefValue);
+											}, 
+											1600);																				
+								} else if (								    
+										result.dismiss === Swal.DismissReason.cancel
+										) {
+										swalWithBootstrapButtons.fire({
+										    type: 'info',
+										    title: 'Client is save',
+										    showConfirmButton: false,
+										    timer: 1500
+										    }
+									)
+									}
+								})
+								}
+							</script>
+
+
+
+
+
+					</div>
+
+				</div>
+			</footer>
+		</div>
+	</div>
+
+
+
+
+
+
+</body>
+
+</html>
+
+
